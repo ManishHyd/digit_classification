@@ -23,4 +23,4 @@ jobs:
       - name: Run test cases
         run:
           python digits_classification.py
-      - run: echo"Add a new print/echo statement in GitHub actions yaml file"
+      - run: echo"Add a new print or echo statement in GitHub actions yaml file"
