@@ -35,6 +35,8 @@ from utils import *
 
 digits = datasets.load_digits()
 
+print(f"Size (height and width) of the images in dataset: {digits.images[0].shape}")
+
 _, axes = plt.subplots(nrows=1, ncols=4, figsize=(10, 3))
 for ax, image, label in zip(axes, digits.images, digits.target):
     ax.set_axis_off()
@@ -120,6 +122,9 @@ n_samples = len(digits.images)
 data = digits.images.reshape((n_samples, -1))
 X = data
 y  = digits.target
+
+print("The number of total samples in the dataset (train + test + dev): ", len(X))
+
 gamma = [0.001,0.01,0.1,1,10,100]
 C = [0.1,1,2,5,10]
 parameter_combinations = [{"gamma":i, "C":j} for i in gamma for j in C] 
