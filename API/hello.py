@@ -1,6 +1,8 @@
+
 from flask import Flask,request
 from sklearn import svm
 from joblib import load
+from flask import Flask
 
 app = Flask(__name__)
 
@@ -29,3 +31,4 @@ def digit_prediction():
     if pred_1 == pred_2:
         return "TRUE"
     return "FALSE"
+    return name  + " your sum is " + str(int(a) + int(b))
