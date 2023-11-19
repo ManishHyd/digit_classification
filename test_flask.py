@@ -17,3 +17,4 @@ def test_post_predict():
         response = app.test_client().post("/predict", json = {'input': image})
         assert response.status_code == 200
         assert response.get_data() == bytes(str([label]), "utf-8")
+
