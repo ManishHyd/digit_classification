@@ -28,12 +28,12 @@ def PREDICTED_MODELS(to_check):
 
     models_dict = {
         "svm":f'./models/svm_gamma:1_C:10.joblib',
-        "tree:f'./models/M23CSA014_tree_max_depth:10.joblib',
+        "tree":f'./models/M23CSA014_tree_max_depth:10.joblib',
         "lr":f'./models/M23CSA014_lr_solver:liblinear.joblib'
     }
     
     if to_check == "svm":
-        model = load(models_dict['svm])
+        model = load(models_dict['svm'])
     if to_check == 'tree':
         model = load(models_dict['tree'])
     if to_check == 'lr':
