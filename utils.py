@@ -1,9 +1,8 @@
 from sklearn.model_selection import train_test_split
 # Standard scientific Python imports
 import matplotlib.pyplot as plt
-from sklearn import svm, tree, datasets, metrics    
+from sklearn import svm, tree, datasets, metrics, linear_model
 from joblib import dump, load
-
 
 def find_acc(model, X_test, y_test):
     predicted = model.predict(X_test)
@@ -16,10 +15,15 @@ def train_model(x, y, model_params, model_type="svm"):
     if model_type == "tree":
         # Create a classifier: a decision tree classifier
         clf = tree.DecisionTreeClassifier
+    if model_type == "lr":
+        # Create a classifier: a decision tree classifier
+        clf = linear_model.LogisticRegression
     model = clf(**model_params)
     # train the model
     model.fit(x, y)
     return model
+
+
 
 def tune_hparams(model_type,X_train, X_test, X_dev , y_train, y_test, y_dev,list_of_param_combination):
     best_acc = -1
@@ -34,6 +38,11 @@ def tune_hparams(model_type,X_train, X_test, X_dev , y_train, y_test, y_dev,list
             best_model_path = f'./models/{model_type}_' +"_".join(["{}:{}".format(k,v) for k,v in param_group.items()]) + ".joblib"
             best_model = temp_model
             optimal_param = param_group
+        dev_acc,_ = find_acc(temp_model,X_dev,y_dev,)
+        test_acc,_test_predicted =  find_acc(temp_model,X_test,y_test)
+        print(f'model: {model_type}:  train_acc: {acc}, dev_acc: {dev_acc}, test_acc: {test_acc}, params: {param_group}')
+        model_path = f'./models/{"M23CSA014_"}{model_type}_' +"_".join(["{}:{}".format(k,v) for k,v in param_group.items()]) + ".joblib"
+        dump(temp_model, model_path)
     train_acc,_= find_acc(best_model,X_train,y_train) 
     dev_acc,_ = find_acc(best_model,X_dev,y_dev)
     test_acc,_test_predicted =  find_acc(best_model,X_test,y_test)

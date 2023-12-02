@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 # Import datasets, classifiers and performance metrics
 from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import Normalizer
+from joblib import dump, load
 from utils import *
 
 ###############################################################################
@@ -152,11 +154,19 @@ h_params_trees_combinations = get_hyperparameter_combinations(h_params_tree)
 classifier_param_dict['tree'] = h_params_trees_combinations
 
 
+solver = ["lbfgs", "liblinear", "newton-cg", "newton-cholesky", "sag", "saga"]
+h_params_tree = {
+    'solver' :solver}
+
+h_params_trees_combinations = get_hyperparameter_combinations(h_params_tree)
+classifier_param_dict['lr'] = h_params_trees_combinations
+
+
  
 # param_groups = [{"gamma":i, "C":j} for i in gamma for j in C] 
 # Create Train_test_dev size groups
-test_sizes = [0.1, 0.2, 0.3] 
-dev_sizes  = [0.1, 0.2, 0.3]
+test_sizes = [0.1] 
+dev_sizes  = [0.1]
 test_dev_size_combintion = [{"test_size":i, "dev_size":j} for i in test_sizes for j in dev_sizes] 
 
 # Create a classifier: a support vector classifier
@@ -182,6 +192,13 @@ for cur_run_i in range(num_runs):
             # 3. Data splitting -- to create train and test sets                
             # X_train, X_test, X_dev, y_train, y_test, y_dev = train_test_dev_split(X, y, test_size=test_size, dev_size=dev_size)
             X_train, X_test, X_dev , y_train, y_test, y_dev = split_train_dev_test(X,y,test_size=test_size, dev_size=dev_size)
+
+            transforms = Normalizer().fit(X_train)
+            X_train = transforms.transform(X_train)
+            X_test = transforms.transform(X_test)
+            X_dev = transforms.transform(X_dev)
+
+            dump(transforms,'./models/transforms.joblib')
 
             # # 4. Data preprocessing
             # X_train = preprocess_data(X_train)
@@ -211,14 +228,14 @@ for cur_run_i in range(num_runs):
                 print(metrics.confusion_matrix(y_test, predicted_y))
 
 
-print("svm-tree Confusion metrics".format())
-print(metrics.confusion_matrix(model_preds['svm'], model_preds['tree']))
+# print("svm-tree Confusion metrics".format())
+# print(metrics.confusion_matrix(model_preds['svm'], model_preds['tree']))
 
-print("binarized predictions")
-print(metrics.confusion_matrix(binary_preds['svm'], binary_preds['tree'], labels=[True, False]))
-print("binarized predictions -- normalized over true labels")
-print(metrics.confusion_matrix(binary_preds['svm'], binary_preds['tree'], labels=[True, False] , normalize='true'))
-print("binarized predictions -- normalized over pred  labels")
-print(metrics.confusion_matrix(binary_preds['svm'], binary_preds['tree'], labels=[True, False] , normalize='pred'))
+# print("binarized predictions")
+# print(metrics.confusion_matrix(binary_preds['svm'], binary_preds['tree'], labels=[True, False]))
+# print("binarized predictions -- normalized over true labels")
+# print(metrics.confusion_matrix(binary_preds['svm'], binary_preds['tree'], labels=[True, False] , normalize='true'))
+# print("binarized predictions -- normalized over pred  labels")
+# print(metrics.confusion_matrix(binary_preds['svm'], binary_preds['tree'], labels=[True, False] , normalize='pred'))
         
 # print(pd.DataFrame(results).groupby('model_type').describe().T)
