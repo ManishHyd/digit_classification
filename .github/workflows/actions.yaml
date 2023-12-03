@@ -20,9 +20,9 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Install dep
         run:  pip3 install --no-cache-dir -r requirements.txt
-      - name : Testing
-        run: pytest
       - name: Run
         run:
           python digits_classification.py
+      - name : Testing
+        run: pytest
       - run: echo "Add a new print or echo statement in GitHub actions yaml file"
